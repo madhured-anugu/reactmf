@@ -199,6 +199,46 @@
   border-radius: 4px;
 }
 
+/* Federation improvements styles */
+.federation-info {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border: 2px solid #4caf50;
+  border-radius: 8px;
+  background-color: #f8fff8;
+}
+
+.federation-info h3 {
+  color: #2e7d32;
+  margin-bottom: 1rem;
+}
+
+.federation-info ul {
+  list-style: none;
+  padding: 0;
+}
+
+.federation-info li {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background-color: #e8f5e8;
+  border-radius: 4px;
+}
+
+.reload-btn {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.reload-btn:hover {
+  background-color: #1976d2;
+}
+
 @media (max-width: 768px) {
   .mfe-container {
     grid-template-columns: 1fr;

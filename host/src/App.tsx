@@ -1,65 +1,12 @@
 import React, { Suspense, useState, useEffect } from 'react'
 import './App.css'
 
-// Make React available globally for shared scope
-if (typeof window !== 'undefined') {
-  window.React = React;
-}
-
-// TypeScript declarations for remote modules
-declare global {
-  interface Window {
-    [key: string]: any
-    __federation_shared__: any
-  }
-}
-
-// Dynamic remote loading function for Vite Federation
-export async function loadRemote(remoteUrl: string, _scope: string, module: string) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // Import the remoteEntry.js as an ES module
-      const remoteModule = await import(/* @vite-ignore */ remoteUrl);
-      
-      // Check if we have the get function
-      if (!remoteModule.get) {
-        throw new Error(`Remote module does not expose 'get' function`);
-      }
-      
-      // Initialize the remote with shared dependencies if available
-      if (remoteModule.init) {
-        const sharedScope = {
-          react: {
-            '18.2.0': {
-              get: () => Promise.resolve(() => window.React || React),
-              loaded: true
-            }
-          },
-          'react-dom': {
-            '18.2.0': {
-              get: () => Promise.resolve(() => window.ReactDOM),
-              loaded: true
-            }
-          }
-        };
-        try {
-          await remoteModule.init(sharedScope);
-        } catch (initError) {
-          console.warn('Failed to initialize shared scope:', initError);
-        }
-      }
-      
-      // Get the exposed module
-      const factory = await remoteModule.get(module);
-      const Module = await factory();
-      
-      resolve(Module.default || Module);
-    } catch (error) {
-      console.error(`Failed to load remote module ${module} from ${remoteUrl}:`, error);
-      reject(error);
-    }
-  });
-}
+// Import federation methods directly (better approach)
+import {
+  __federation_method_getRemote,
+  __federation_method_setRemote,
+  // @ts-ignore
+} from "__federation__";
 
 interface MFEConfig {
   name: string
@@ -83,12 +30,27 @@ const DEFAULT_MFES: MFEConfig[] = [
   }
 ]
 
-// Dynamic component wrapper
+// Simplified dynamic component creation using federation methods
 const createDynamicComponent = (remoteUrl: string, scope: string, module: string) => {
+  console.log(`Creating dynamic component for ${module} from ${remoteUrl}`);
+  
   return React.lazy(async () => {
     try {
-      const Component = await loadRemote(remoteUrl, scope, module) as React.ComponentType;
-      return { default: Component };
+      console.log(`React.lazy is executing for ${module} from ${remoteUrl}`);
+      
+      // Set up the remote using federation methods
+      __federation_method_setRemote(scope, {
+        url: () => Promise.resolve(remoteUrl),
+        format: 'esm',
+        from: 'vite'
+      });
+      
+      // Get the remote module directly - federation methods return the correct format
+      const result = await __federation_method_getRemote(scope, module);
+      console.log(`Successfully loaded component ${module}`, result);
+      
+      // Return the result directly - federation methods handle the module structure
+      return result;
     } catch (error) {
       console.error(`Failed to load remote component from ${remoteUrl}:`, error);
       // Return fallback component
@@ -181,10 +143,13 @@ function App() {
 
   // Load default components on mount
   useEffect(() => {
+    console.log('Loading default MFEs...');
     DEFAULT_MFES.forEach(config => {
+      console.log(`Creating component for ${config.name}: ${config.url} -> ${config.module}`);
       try {
         const Component = createDynamicComponent(config.url, config.name, config.module)
         setLoadedComponents(prev => ({ ...prev, [config.name]: Component }))
+        console.log(`Added ${config.name} to loaded components`);
       } catch (error) {
         console.error(`Failed to load default ${config.name}:`, error)
       }

@@ -15,8 +15,8 @@ export default defineConfig({
     })
   ],
   build: {
-    modulePreload: false,
     target: 'esnext',
+    modulePreload: false,
     minify: false,
     cssCodeSplit: false,
     rollupOptions: {

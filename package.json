@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "npm run build:mfes && npm run preview:mfes && sleep 3 && npm run dev:host",
     "dev:quick": "concurrently \"npm run preview:mfe1\" \"npm run preview:mfe2\" \"sleep 3 && npm run dev:host\"",
-    "dev:mfes": "concurrently \"npm run dev:mfe1\" \"npm run dev:mfe2\"",
     "dev:host": "cd host && vite --port 3000",
     "dev:mfe1": "cd mfe1 && vite --port 3001",
     "dev:mfe2": "cd mfe2 && vite --port 3002",
@@ -21,6 +20,7 @@
     "preview:host": "cd host && vite preview --port 3000",
     "preview:mfe1": "cd mfe1 && vite preview --port 3001",
     "preview:mfe2": "cd mfe2 && vite preview --port 3002",
+    "check:services": "curl -s http://localhost:3001/assets/remoteEntry.js > /dev/null && echo 'MFE1 ✅' || echo 'MFE1 ❌' && curl -s http://localhost:3002/assets/remoteEntry.js > /dev/null && echo 'MFE2 ✅' || echo 'MFE2 ❌'",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "clean": "rm -rf node_modules host/dist mfe1/dist mfe2/dist"
   },

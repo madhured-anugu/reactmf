@@ -2,29 +2,23 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import federation from '@originjs/vite-plugin-federation'
 
-export default defineConfig(({ mode }) => {
-  const isProduction = mode === 'production'
-  const baseUrl = process.env.VITE_APP_URL || ''
-  
+export default defineConfig(() => {
   return {
     plugins: [
       react(),
       federation({
         name: 'host',
         remotes: {
-          mfe1: isProduction 
-            ? `${baseUrl}/mfe1/assets/remoteEntry.js`
-            : 'http://localhost:3001/assets/remoteEntry.js',
-          mfe2: isProduction
-            ? `${baseUrl}/mfe2/assets/remoteEntry.js`
-            : 'http://localhost:3002/assets/remoteEntry.js'
+          // Module federation is being handled dynamically. see App.tsx
+          // Add dummy.js to prevent vite from throwing an error
+          dummy: 'dummy.js'
         },
         shared: ['react', 'react-dom']
       })
     ],
     build: {
-      modulePreload: false,
       target: 'esnext',
+      modulePreload: false,
       minify: false,
       cssCodeSplit: false
     },
