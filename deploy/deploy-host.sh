@@ -60,24 +60,33 @@ select_project() {
     echo "✓ Project ID saved to secrets.config"
 }
 
-# Check for secrets.config file
+# Check for secrets.config file in multiple locations
+SECRETS_CONFIG=""
 if [ -f "../secrets.config" ]; then
-    echo "Loading configuration from secrets.config..."
-    source ../secrets.config
+    SECRETS_CONFIG="../secrets.config"
+elif [ -f "./secrets.config" ]; then
+    SECRETS_CONFIG="./secrets.config"
+elif [ -f "secrets.config" ]; then
+    SECRETS_CONFIG="secrets.config"
+fi
+
+if [ -n "$SECRETS_CONFIG" ]; then
+    echo "Loading configuration from $SECRETS_CONFIG..."
+    source "$SECRETS_CONFIG"
     
     if [ -z "$PROJECT_ID" ]; then
-        echo "WARNING: PROJECT_ID not found in secrets.config"
+        echo "WARNING: PROJECT_ID not found in $SECRETS_CONFIG"
         select_project
     else
-        echo "Using PROJECT_ID from secrets.config: $PROJECT_ID"
+        echo "Using PROJECT_ID from $SECRETS_CONFIG: $PROJECT_ID"
         
         if ! gcloud projects describe "$PROJECT_ID" > /dev/null 2>&1; then
-            echo "WARNING: Cannot access project '$PROJECT_ID' from secrets.config"
+            echo "WARNING: Cannot access project '$PROJECT_ID' from $SECRETS_CONFIG"
             select_project
         fi
     fi
 else
-    echo "secrets.config not found."
+    echo "secrets.config not found in any of the expected locations (../secrets.config, ./secrets.config, secrets.config)."
     select_project
 fi
 
@@ -123,7 +132,8 @@ gcloud run deploy "$SERVICE_NAME" \
   --platform managed \
   --region "$REGION" \
   --allow-unauthenticated \
-  --port 8080
+  --port 8080 \
+  --update-env-vars PROJECT_ID="$PROJECT_ID"
 
 if [ $? -ne 0 ]; then
     echo "ERROR: Deployment to Cloud Run failed."
@@ -138,3 +148,14 @@ echo "🎉 Host Application deployment successful!"
 echo "Your MFE Host Application is now available at: $SERVICE_URL"
 echo ""
 echo "Save this URL to configure in other MFE applications."
+
+# Update MFE configuration in Cloud Storage after host deployment
+echo ""
+echo "Updating MFE configuration in Cloud Storage..."
+if ./update-mfe-config.sh update; then
+    echo "✓ MFE configuration updated successfully!"
+    echo "Host application will automatically load MFE URLs from Cloud Storage."
+else
+    echo "⚠️  Failed to update MFE configuration, but deployment was successful."
+    echo "Host application will use localhost URLs as fallback."
+fi

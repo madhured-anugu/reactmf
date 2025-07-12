@@ -13,7 +13,14 @@ export default defineConfig(() => {
           // Add dummy.js to prevent vite from throwing an error
           dummy: 'dummy.js'
         },
-        shared: ['react', 'react-dom']
+        shared: {
+          react: {
+            requiredVersion: '^18.0.0'
+          },
+          'react-dom': {
+            requiredVersion: '^18.0.0'
+          }
+        }
       })
     ],
     build: {

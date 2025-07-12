@@ -9,9 +9,17 @@ export default defineConfig({
       name: 'mfe2',
       filename: 'remoteEntry.js',
       exposes: {
-        './UserProfile': './src/components/UserProfile.tsx'
+        './UserProfile': './src/components/UserProfile.tsx',
+        './main': './src/federation-entry.tsx'
       },
-      shared: ['react', 'react-dom']
+      shared: {
+        react: {
+          requiredVersion: '^18.0.0'
+        },
+        'react-dom': {
+          requiredVersion: '^18.0.0'
+        }
+      }
     })
   ],
   build: {

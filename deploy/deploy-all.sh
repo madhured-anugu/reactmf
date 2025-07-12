@@ -18,6 +18,7 @@ make_executable() {
     chmod +x deploy-mfe1.sh
     chmod +x deploy-mfe2.sh
     chmod +x deploy-host.sh
+    chmod +x update-mfe-config.sh
     echo "✓ Made deployment scripts executable"
 }
 
@@ -51,6 +52,11 @@ deploy_all() {
         echo "❌ Host deployment failed!"
         exit 1
     fi
+    
+    echo ""
+    echo "📊 Final MFE Configuration Update..."
+    echo "===================================="
+    ./update-mfe-config.sh update
 }
 
 # Function to deploy individual service
@@ -107,13 +113,14 @@ fi
 echo ""
 echo "🎉 Deployment process completed!"
 echo ""
-echo "📋 Next Steps:"
-echo "=============="
-echo "1. Note down the URLs provided by each deployment"
-echo "2. Use the Remote Entry URLs in your host application"
-echo "3. Test the deployed applications"
+echo "📋 Final Status:"
+echo "================"
+echo "✅ All services deployed successfully"
+echo "✅ MFE configuration stored in Cloud Storage"
+echo "✅ Host application will auto-load MFE URLs"
 echo ""
-echo "💡 Tips:"
-echo "- MFE Remote Entry URLs: https://your-service-url.com/assets/remoteEntry.js"
-echo "- You can update the host application to load MFEs from these URLs"
+echo "💡 Features:"
+echo "- Host automatically loads remote MFEs using './main' module"
+echo "- MFE URLs are stored in Google Cloud Storage"
+echo "- Fallback to localhost if Cloud Storage unavailable"
 echo "- Each service is independently scalable and deployable"

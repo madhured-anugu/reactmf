@@ -15,20 +15,28 @@ interface MFEConfig {
   displayName: string
 }
 
-const DEFAULT_MFES: MFEConfig[] = [
-  {
-    name: 'mfe1',
-    url: 'http://localhost:3001/assets/remoteEntry.js',
-    module: './ProductList',
-    displayName: 'Product List (Local)'
-  },
-  {
-    name: 'mfe2',
-    url: 'http://localhost:3002/assets/remoteEntry.js',
-    module: './UserProfile',
-    displayName: 'User Profile (Local)'
-  }
-]
+// Check for URLs from GCP storage first, fallback to localhost
+const getDefaultMFEs = (): MFEConfig[] => {
+  // @ts-ignore - window.mfeUrls will be injected by the deployment process
+  const mfeUrls = window.mfeUrls || {};
+  
+  return [
+    {
+      name: 'mfe1',
+      url: mfeUrls.mfe1 || 'http://localhost:3001/assets/remoteEntry.js',
+      module: './main',
+      displayName: mfeUrls.mfe1 ? 'Product List (Cloud)' : 'Product List (Local)'
+    },
+    {
+      name: 'mfe2',
+      url: mfeUrls.mfe2 || 'http://localhost:3002/assets/remoteEntry.js',
+      module: './main',
+      displayName: mfeUrls.mfe2 ? 'User Profile (Cloud)' : 'User Profile (Local)'
+    }
+  ]
+}
+
+const DEFAULT_MFES: MFEConfig[] = getDefaultMFEs()
 
 // Simplified dynamic component creation using federation methods
 const createDynamicComponent = (remoteUrl: string, scope: string, module: string) => {
@@ -49,8 +57,14 @@ const createDynamicComponent = (remoteUrl: string, scope: string, module: string
       const result = await __federation_method_getRemote(scope, module);
       console.log(`Successfully loaded component ${module}`, result);
       
-      // Return the result directly - federation methods handle the module structure
-      return result;
+      // Check if result is valid and has a default export
+      if (result && typeof result.default === 'function') {
+        return result;
+      } else if (result && typeof result === 'function') {
+        return { default: result };
+      } else {
+        throw new Error(`Invalid module format: expected function, got ${typeof result}`);
+      }
     } catch (error) {
       console.error(`Failed to load remote component from ${remoteUrl}:`, error);
       // Return fallback component
@@ -94,7 +108,7 @@ function App() {
     if (!url) return
     
     try {
-      const defaultModule = mfeKey === 'mfe1' ? './ProductList' : './UserProfile'
+      const defaultModule = './main' // Always use ./main as default
       const module = customModules[mfeKey].trim() || defaultModule
       const Component = createDynamicComponent(url, mfeKey, module)
       setLoadedComponents(prev => ({ ...prev, [mfeKey]: Component }))
@@ -190,7 +204,7 @@ function App() {
                 type="text"
                 value={customModules.mfe1}
                 onChange={(e) => handleModuleChange('mfe1', e.target.value)}
-                placeholder="./ProductList (default)"
+                placeholder="./main (default)"
                 className="url-input"
               />
               <div className="button-group">
@@ -222,7 +236,7 @@ function App() {
                 type="text"
                 value={customModules.mfe2}
                 onChange={(e) => handleModuleChange('mfe2', e.target.value)}
-                placeholder="./UserProfile (default)"
+                placeholder="./main (default)"
                 className="url-input"
               />
               <div className="button-group">
@@ -249,7 +263,7 @@ function App() {
             <h2>📦 Products (MFE1)</h2>
             <div className="current-url">
               <div>URL: {customUrls.mfe1 || DEFAULT_MFES[0].url}</div>
-              <div>Module: {customModules.mfe1 || './ProductList'}</div>
+              <div>Module: {customModules.mfe1 || './main'}</div>
             </div>
             <Suspense fallback={<div className="loading">Loading Products...</div>}>
               <MFE1Component />
@@ -260,7 +274,7 @@ function App() {
             <h2>👤 User Profile (MFE2)</h2>
             <div className="current-url">
               <div>URL: {customUrls.mfe2 || DEFAULT_MFES[1].url}</div>
-              <div>Module: {customModules.mfe2 || './UserProfile'}</div>
+              <div>Module: {customModules.mfe2 || './main'}</div>
             </div>
             <Suspense fallback={<div className="loading">Loading Profile...</div>}>
               <MFE2Component />

@@ -403,3 +403,139 @@ This setup provides a solid foundation for a production-ready micro frontend arc
 gcp
 https://mfe1-products-ewt6e5d5pa-uc.a.run.app
 https://mfe2-profile-ewt6e5d5pa-uc.a.run.app
+
+## 🚀 Enhanced MFE Architecture
+
+### New Features
+
+#### 1. **Default `./main` Module Exposure**
+Both MFEs now expose their main entry point via `./main` module:
+- **MFE1**: Exposes both `./ProductList` and `./main` 
+- **MFE2**: Exposes both `./UserProfile` and `./main`
+- **Host**: Uses `./main` as the default module for dynamic loading
+
+#### 2. **Automatic Cloud URL Discovery**
+The host application automatically discovers MFE URLs from Google Cloud Storage:
+- URLs are stored in a JSON configuration file in Cloud Storage
+- Host application reads these URLs at runtime via `window.mfeUrls`
+- Fallback to localhost URLs for development
+
+#### 3. **Automated Deployment Pipeline**
+Complete deployment automation with configuration management:
+- MFE deployments automatically update Cloud Storage configuration
+- Host deployment reads configuration and injects URLs into `index.html`
+- Zero-configuration dynamic MFE loading
+
+### Cloud Storage Integration
+
+#### Configuration Management
+```bash
+# Update MFE configuration in Cloud Storage
+./deploy/update-mfe-config.sh update
+
+# View current configuration
+./deploy/update-mfe-config.sh show
+
+# Create storage bucket only
+./deploy/update-mfe-config.sh create-bucket
+```
+
+#### Automatic URL Injection
+The host application automatically receives MFE URLs through:
+1. **Cloud Storage**: Downloads configuration from `gs://PROJECT_ID-mfe-config/mfe-urls.json`
+2. **Runtime Injection**: URLs are injected into `window.mfeUrls` during container startup
+3. **Dynamic Loading**: Host uses these URLs to load MFEs with `./main` module
+
+#### Configuration Structure
+```json
+{
+  "lastUpdated": "2025-07-12T15:58:02Z",
+  "projectId": "your-project-id",
+  "services": {
+    "mfe1": {
+      "name": "mfe1-products",
+      "url": "https://mfe1-products-xyz.run.app",
+      "remoteEntry": "https://mfe1-products-xyz.run.app/assets/remoteEntry.js",
+      "status": "deployed"
+    },
+    "mfe2": {
+      "name": "mfe2-profile",
+      "url": "https://mfe2-profile-xyz.run.app", 
+      "remoteEntry": "https://mfe2-profile-xyz.run.app/assets/remoteEntry.js",
+      "status": "deployed"
+    }
+  },
+  "mfeUrls": {
+    "mfe1": "https://mfe1-products-xyz.run.app/assets/remoteEntry.js",
+    "mfe2": "https://mfe2-profile-xyz.run.app/assets/remoteEntry.js"
+  }
+}
+```
+
+### Enhanced Deployment Scripts
+
+#### Complete Deployment Workflow
+```bash
+cd deploy
+
+# Full deployment (recommended)
+./deploy-complete.sh
+
+# Deploy only MFEs
+./deploy-complete.sh mfes-only
+
+# Deploy only host
+./deploy-complete.sh host-only
+
+# Update configuration only
+./deploy-complete.sh config-only
+```
+
+#### Individual Deployments
+```bash
+# Deploy individual services (with auto-config update)
+./deploy-mfe1.sh     # Deploys MFE1 + updates config
+./deploy-mfe2.sh     # Deploys MFE2 + updates config  
+./deploy-host.sh     # Deploys host + reads config
+```
+
+### Development Experience
+
+#### Local Development
+```bash
+# Standard development workflow
+npm run dev                    # Builds MFEs, starts preview, then host
+
+# Using ./main modules locally
+# Both MFEs now expose ./main alongside their specific components
+# Host automatically uses ./main as default module
+```
+
+#### Cloud Development
+```bash
+# Deploy MFEs to cloud, develop host locally
+./deploy-complete.sh mfes-only
+npm run dev:host               # Host reads cloud URLs automatically
+```
+
+### Architecture Benefits
+
+#### Zero-Configuration Loading
+- **Development**: Host loads from localhost automatically
+- **Cloud**: Host reads MFE URLs from Cloud Storage automatically  
+- **No manual URL configuration needed**
+
+#### Simplified Module Structure
+- **Consistent Interface**: All MFEs expose `./main` 
+- **Backward Compatible**: Original component exports still available
+- **Easier Integration**: Standard entry point for all MFEs
+
+#### Automated Configuration Management
+- **Real-time Updates**: MFE deployments automatically update configuration
+- **Public Access**: Configuration is publicly readable from Cloud Storage
+- **Fallback Support**: Graceful fallback to localhost URLs
+
+#### Enhanced Security & Permissions
+- **Automatic Permissions**: Scripts handle Cloud Storage permissions automatically
+- **Public Configuration**: MFE URLs are safely exposed for public access
+- **Error Handling**: Graceful handling of permission and network issues
