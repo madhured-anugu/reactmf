@@ -56,14 +56,14 @@ select_project() {
     PROJECT_ID="${PROJECT_ARRAY[$((SELECTION-1))]}"
     echo "Selected project: $PROJECT_ID"
     
-    echo "PROJECT_ID=$PROJECT_ID" > secrets.config
+    echo "PROJECT_ID=$PROJECT_ID" > ../secrets.config
     echo "✓ Project ID saved to secrets.config"
 }
 
 # Check for secrets.config file
-if [ -f "secrets.config" ]; then
+if [ -f "../secrets.config" ]; then
     echo "Loading configuration from secrets.config..."
-    source secrets.config
+    source ../secrets.config
     
     if [ -z "$PROJECT_ID" ]; then
         echo "WARNING: PROJECT_ID not found in secrets.config"
@@ -94,7 +94,9 @@ gcloud config set project "$PROJECT_ID"
 
 # Build the Docker image
 echo "Building Docker image for Cloud Run (linux/amd64 platform)..."
-docker build --platform linux/amd64 -f Dockerfile.mfe2 -t "gcr.io/$PROJECT_ID/$IMAGE_NAME" .
+cd ..
+docker build --platform linux/amd64 -f deploy/Dockerfile.mfe2 -t "gcr.io/$PROJECT_ID/$IMAGE_NAME" .
+cd deploy
 
 if [ $? -ne 0 ]; then
     echo "ERROR: Docker build failed."

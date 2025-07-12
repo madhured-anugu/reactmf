@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Deploy Host Application to GCP Cloud Run
+# Deploy MFE1 (Product List) to GCP Cloud Run
 
 # Configuration
-IMAGE_NAME="mfe-host"
+IMAGE_NAME="mfe1-products"
 REGION="us-central1"
-SERVICE_NAME="mfe-host"
+SERVICE_NAME="mfe1-products"
 
 # Function to get available GCP projects
 get_gcp_projects() {
@@ -56,14 +56,14 @@ select_project() {
     PROJECT_ID="${PROJECT_ARRAY[$((SELECTION-1))]}"
     echo "Selected project: $PROJECT_ID"
     
-    echo "PROJECT_ID=$PROJECT_ID" > secrets.config
+    echo "PROJECT_ID=$PROJECT_ID" > ../secrets.config
     echo "✓ Project ID saved to secrets.config"
 }
 
 # Check for secrets.config file
-if [ -f "secrets.config" ]; then
+if [ -f "../secrets.config" ]; then
     echo "Loading configuration from secrets.config..."
-    source secrets.config
+    source ../secrets.config
     
     if [ -z "$PROJECT_ID" ]; then
         echo "WARNING: PROJECT_ID not found in secrets.config"
@@ -82,7 +82,7 @@ else
 fi
 
 echo ""
-echo "Deploying MFE Host Application to Google Cloud Run..."
+echo "Deploying MFE1 (Product List) to Google Cloud Run..."
 echo "Project ID: $PROJECT_ID"
 echo "Region: $REGION"
 echo "Service Name: $SERVICE_NAME"
@@ -94,7 +94,9 @@ gcloud config set project "$PROJECT_ID"
 
 # Build the Docker image
 echo "Building Docker image for Cloud Run (linux/amd64 platform)..."
-docker build --platform linux/amd64 -f Dockerfile.host -t "gcr.io/$PROJECT_ID/$IMAGE_NAME" .
+cd ..
+docker build --platform linux/amd64 -f deploy/Dockerfile.mfe1 -t "gcr.io/$PROJECT_ID/$IMAGE_NAME" .
+cd deploy
 
 if [ $? -ne 0 ]; then
     echo "ERROR: Docker build failed."
@@ -132,7 +134,8 @@ fi
 SERVICE_URL=$(gcloud run services describe "$SERVICE_NAME" --platform managed --region "$REGION" --format 'value(status.url)')
 
 echo ""
-echo "🎉 Host Application deployment successful!"
-echo "Your MFE Host Application is now available at: $SERVICE_URL"
+echo "🎉 MFE1 (Product List) deployment successful!"
+echo "Your Product List MFE is now available at: $SERVICE_URL"
 echo ""
-echo "Save this URL to configure in other MFE applications."
+echo "Remote Entry URL: ${SERVICE_URL}/assets/remoteEntry.js"
+echo "Use this URL in your host application to load this micro frontend."

@@ -14,16 +14,19 @@ This project demonstrates a true micro frontend architecture where each applicat
 
 ```
 /
+├── README.md                 # Comprehensive documentation
+├── running_notes.md          # Local development notes
 ├── package.json              # Root dependencies and scripts
 ├── tsconfig.json             # Shared TypeScript config
-├── nginx.conf                # Nginx configuration for serving
-├── Dockerfile.host           # Host application container
-├── Dockerfile.mfe1           # MFE1 container
-├── Dockerfile.mfe2           # MFE2 container
-├── deploy-host.sh            # Deploy host to Cloud Run
-├── deploy-mfe1.sh            # Deploy MFE1 to Cloud Run
-├── deploy-mfe2.sh            # Deploy MFE2 to Cloud Run
-├── deploy-all.sh             # Deploy all services
+├── deploy/                   # 🆕 All deployment files
+│   ├── Dockerfile.host       # Host container
+│   ├── Dockerfile.mfe1       # MFE1 container  
+│   ├── Dockerfile.mfe2       # MFE2 container
+│   ├── nginx.conf            # Nginx configuration
+│   ├── deploy-host.sh        # Deploy host to Cloud Run
+│   ├── deploy-mfe1.sh        # Deploy MFE1 to Cloud Run
+│   ├── deploy-mfe2.sh        # Deploy MFE2 to Cloud Run
+│   └── deploy-all.sh         # Deploy all services
 ├── host/                     # Host application (with dynamic MFE loading)
 │   ├── vite.config.ts        # Federation configuration
 │   ├── index.html
@@ -96,7 +99,7 @@ npm run dev:quick
 ```
 
 ### Why This Workflow?
-- **MFEs need to be built first**: Module federation requires the remote entry files to be generated
+- **MFEs need to to be built first**: Module federation requires the remote entry files to be generated
 - **Preview mode works better**: `vite preview` serves the built federation files correctly
 - **Host in dev mode**: The host can run in development mode for hot reloading of host-specific changes
 
@@ -192,11 +195,13 @@ federation({
 
 #### Deploy All Services
 ```bash
+cd deploy
 ./deploy-all.sh all
 ```
 
 #### Deploy Individual Services
 ```bash
+cd deploy
 ./deploy-mfe1.sh     # Deploy Product List MFE
 ./deploy-mfe2.sh     # Deploy User Profile MFE  
 ./deploy-host.sh     # Deploy Host Application
@@ -204,6 +209,7 @@ federation({
 
 #### Interactive Deployment
 ```bash
+cd deploy
 ./deploy-all.sh
 # Select which service to deploy from the menu
 ```
@@ -230,6 +236,67 @@ The host application includes a configuration panel where you can:
 ### Example URLs
 - **Local Development**: `http://localhost:3001/assets/remoteEntry.js`
 - **Cloud Run**: `https://mfe1-products-abc123.run.app/assets/remoteEntry.js`
+
+## 🧹 Image Cleanup
+
+### Cleanup Old Docker Images
+
+As you deploy new versions, old Docker images accumulate in Google Container Registry. Use these scripts to clean up old images:
+
+#### Basic Cleanup Script
+```bash
+cd deploy
+./cleanup-images.sh
+```
+
+This script:
+- Keeps the 2 most recent images for each service (mfe1-products, mfe2-profile, host-app)
+- Shows what will be deleted before proceeding
+- Asks for confirmation before deletion
+
+#### Advanced Cleanup Script
+```bash
+cd deploy
+./cleanup-images-advanced.sh [OPTIONS]
+```
+
+**Options:**
+- `-k, --keep N`: Number of images to keep (default: 2)
+- `-s, --service NAME`: Clean specific service only
+- `-p, --project ID`: Use specific project ID
+- `-y, --yes`: Auto-confirm deletions
+- `-d, --dry-run`: Show what would be deleted without deleting
+- `-h, --help`: Show help message
+
+**Examples:**
+```bash
+# Keep 3 images per service
+./cleanup-images-advanced.sh -k 3
+
+# Clean only MFE1 service
+./cleanup-images-advanced.sh -s mfe1-products
+
+# Dry run to see what would be deleted
+./cleanup-images-advanced.sh -d
+
+# Keep 1 image per service, auto-confirm
+./cleanup-images-advanced.sh -k 1 -y
+
+# Clean specific service with specific project
+./cleanup-images-advanced.sh -p my-project-id -s mfe1-products -k 1 -y
+```
+
+### Cost Optimization
+
+Regular cleanup helps:
+- **Reduce storage costs** in Google Container Registry
+- **Improve performance** by reducing registry size
+- **Maintain clean environment** for better management
+
+**Recommended Schedule:**
+- Run cleanup after every few deployments
+- Set up automated cleanup in CI/CD pipeline
+- Keep 2-3 recent images for rollback capability
 
 ## 🛠️ Use Cases
 
@@ -331,3 +398,8 @@ npm run clean
 - Implement caching strategies
 
 This setup provides a solid foundation for a production-ready micro frontend architecture with dynamic loading capabilities! 🎉
+
+--Examples
+gcp
+https://mfe1-products-ewt6e5d5pa-uc.a.run.app
+https://mfe2-profile-ewt6e5d5pa-uc.a.run.app
