@@ -1,0 +1,284 @@
+.user-profile {
+  max-width: 100%;
+  margin: 0;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  color: #666;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #9b59b6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+}
+
+.avatar {
+  font-size: 4rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+}
+
+.user-info h2 {
+  margin: 0 0 5px 0;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.email {
+  margin: 0 0 10px 0;
+  opacity: 0.9;
+  font-size: 1.1rem;
+}
+
+.role {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+
+.join-date {
+  margin: 10px 0 0 0;
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.profile-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 15px 20px;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.tab:hover {
+  background: #f8f9fa;
+  color: #495057;
+}
+
+.tab.active {
+  background: #e3f2fd;
+  color: #1976d2;
+  border-bottom: 2px solid #1976d2;
+}
+
+.tab-content {
+  min-height: 200px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #e9ecef;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.preferences {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.preference-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.preference-info h4 {
+  margin: 0 0 5px 0;
+  color: #2c3e50;
+}
+
+.preference-info p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #9b59b6;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.activity-item {
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #9b59b6;
+  transition: transform 0.3s ease;
+}
+
+.activity-item:hover {
+  transform: translateX(5px);
+}
+
+.activity-content p {
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.activity-date {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.mfe-info {
+  text-align: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-top: 25px;
+  border-left: 4px solid #9b59b6;
+}
+
+.mfe-info small {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .profile-tabs {
+    flex-direction: column;
+  }
+  
+  .tab {
+    text-align: center;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .preference-item {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+}

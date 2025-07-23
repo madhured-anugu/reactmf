@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Single-SPA Root Config</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    
+    .header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      font-weight: 300;
+    }
+    
+    .header p {
+      margin: 10px 0 0 0;
+      opacity: 0.8;
+      font-size: 1.1rem;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    .microfrontends {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+    
+    .mfe-section {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .mfe-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .mfe-title {
+      color: #333;
+      margin: 0 0 20px 0;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      font-style: italic;
+    }
+    
+    .error {
+      text-align: center;
+      padding: 40px;
+      color: #e74c3c;
+      background: #fff5f5;
+      border-radius: 10px;
+      border-left: 4px solid #e74c3c;
+    }
+    
+    @media (max-width: 768px) {
+      .microfrontends {
+        grid-template-columns: 1fr;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .container {
+        margin: 20px auto;
+      }
+    }
+  </style>
+  
+  <% if (isLocal) { %>
+  <script type="systemjs-importmap">
+    {
+      "imports": {
+        "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js",
+        "@reactmf/root-config": "http://localhost:9000/reactmf-root-config.js",
+        "@reactmf/product-list": "http://localhost:8080/reactmf-product-list.js",
+        "@reactmf/user-profile": "http://localhost:8081/reactmf-user-profile.js",
+        "react": "https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js",
+        "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js",
+        "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"
+      }
+    }
+  </script>
+  <% } else { %>
+  <script type="systemjs-importmap">
+    {
+      "imports": {
+        "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js",
+        "@reactmf/root-config": "http://localhost:9000/reactmf-root-config.js",
+        "@reactmf/product-list": "http://localhost:8080/reactmf-product-list.js",
+        "@reactmf/user-profile": "http://localhost:8081/reactmf-user-profile.js",
+        "react": "https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js",
+        "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js",
+        "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"
+      }
+    }
+  </script>
+  <% } %>
+  
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js" as="script">
+  
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js"></script>
+</head>
+<body>
+  <div class="header">
+    <h1>🚀 Single-SPA Micro-Frontend Demo</h1>
+    <p>A demonstration of micro-frontend architecture using Single-SPA</p>
+  </div>
+  
+  <div class="container">
+    <div class="microfrontends">
+      <div class="mfe-section">
+        <h2 class="mfe-title">🛍️ Product List MFE</h2>
+        <div id="product-list-mfe">
+          <div class="loading">Loading Product List...</div>
+        </div>
+      </div>
+      
+      <div class="mfe-section">
+        <h2 class="mfe-title">👤 User Profile MFE</h2>
+        <div id="user-profile-mfe">
+          <div class="loading">Loading User Profile...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    System.import('@reactmf/root-config');
+  </script>
+</body>
+</html>
