@@ -1,23 +1,15 @@
-import { registerApplication, start } from 'single-spa';
+import { registerApplication, unregisterApplication, start } from 'single-spa';
 
-registerApplication({
-  name: '@reactmf/product-list',
-  app: () => System.import('@reactmf/product-list'),
-  activeWhen: () => true,
-  customProps: {
-    domElement: document.getElementById('product-list-mfe'),
-  }
-});
+// Make singleSpa globally available for dynamic loading
+window.singleSpa = { 
+  registerApplication, 
+  unregisterApplication, 
+  start 
+};
 
-registerApplication({
-  name: '@reactmf/user-profile', 
-  app: () => System.import('@reactmf/user-profile'),
-  activeWhen: () => true,
-  customProps: {
-    domElement: document.getElementById('user-profile-mfe'),
-  }
-});
-
+// Start single-spa without any pre-registered applications
 start({
   urlRerouteOnly: true,
 });
+
+console.log('Single-SPA root config initialized. Ready for dynamic micro-frontend loading.');

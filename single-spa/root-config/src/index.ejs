@@ -84,7 +84,197 @@
       border-left: 4px solid #e74c3c;
     }
     
+    /* Configuration Section Styles */
+    .config-section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .config-title {
+      color: white;
+      margin: 0 0 10px 0;
+      font-size: 1.8rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .config-description {
+      color: rgba(255, 255, 255, 0.8);
+      text-align: center;
+      margin: 0 0 25px 0;
+      font-size: 1rem;
+    }
+    
+    .config-grid {
+      display: grid;
+      gap: 20px;
+    }
+    
+    .config-item {
+      display: grid;
+      grid-template-columns: 200px 1fr auto;
+      gap: 15px;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+    }
+    
+    .config-item label {
+      color: white;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    
+    .config-item input {
+      padding: 10px 15px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 0.9rem;
+    }
+    
+    .config-item input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .config-item input:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .load-btn, .load-all-btn, .unload-btn, .reset-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    
+    .load-btn {
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      color: white;
+    }
+    
+    .load-btn:hover {
+      background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+      transform: translateY(-2px);
+    }
+    
+    .config-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      grid-column: 1 / -1;
+      margin-top: 20px;
+    }
+    
+    .load-all-btn {
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      color: white;
+      font-size: 1rem;
+      padding: 12px 25px;
+    }
+    
+    .load-all-btn:hover {
+      background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+      transform: translateY(-2px);
+    }
+    
+    .unload-btn {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      color: white;
+    }
+    
+    .unload-btn:hover {
+      background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+      transform: translateY(-2px);
+    }
+    
+    .reset-btn {
+      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+      color: white;
+    }
+    
+    .reset-btn:hover {
+      background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+      transform: translateY(-2px);
+    }
+    
+    .status-indicator {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      font-weight: 500;
+    }
+    
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .status-loaded {
+      background: #27ae60;
+      color: white;
+    }
+    
+    .status-loading {
+      background: #3498db;
+      color: white;
+      animation: pulse 1.5s ease-in-out infinite alternate;
+    }
+    
+    @keyframes pulse {
+      from { opacity: 0.6; }
+      to { opacity: 1; }
+    }
+    
+    .status-unloaded {
+      background: #95a5a6;
+      color: white;
+    }
+    
+    .status-error {
+      background: #e74c3c;
+      color: white;
+    }
+    
     @media (max-width: 768px) {
+      .config-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .config-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .status-indicator {
+        flex-direction: column;
+        align-items: center;
+      }
+      
       .microfrontends {
         grid-template-columns: 1fr;
       }
@@ -105,8 +295,6 @@
       "imports": {
         "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js",
         "@reactmf/root-config": "http://localhost:9000/reactmf-root-config.js",
-        "@reactmf/product-list": "http://localhost:8080/reactmf-product-list.js",
-        "@reactmf/user-profile": "http://localhost:8081/reactmf-user-profile.js",
         "react": "https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js",
         "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js",
         "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"
@@ -119,8 +307,6 @@
       "imports": {
         "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js",
         "@reactmf/root-config": "http://localhost:9000/reactmf-root-config.js",
-        "@reactmf/product-list": "http://localhost:8080/reactmf-product-list.js",
-        "@reactmf/user-profile": "http://localhost:8081/reactmf-user-profile.js",
         "react": "https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js",
         "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js",
         "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"
@@ -141,6 +327,47 @@
   </div>
   
   <div class="container">
+    <!-- Dynamic Configuration Section -->
+    <div class="config-section">
+      <h2 class="config-title">🔧 Dynamic Micro-Frontend Configuration</h2>
+      <p class="config-description">Enter URLs for micro-frontends to load them dynamically at runtime</p>
+      
+      <div class="config-grid">
+        <div class="config-item">
+          <label for="product-list-url">🛍️ Product List MFE URL:</label>
+          <input type="url" id="product-list-url" 
+                 placeholder="http://localhost:8080/reactmf-product-list.js"
+                 value="http://localhost:8080/reactmf-product-list.js">
+          <button onclick="loadProductListMFE()" class="load-btn">Load Product List</button>
+        </div>
+        
+        <div class="config-item">
+          <label for="user-profile-url">👤 User Profile MFE URL:</label>
+          <input type="url" id="user-profile-url" 
+                 placeholder="http://localhost:8081/reactmf-user-profile.js"
+                 value="http://localhost:8081/reactmf-user-profile.js">
+          <button onclick="loadUserProfileMFE()" class="load-btn">Load User Profile</button>
+        </div>
+        
+        <div class="config-actions">
+          <button onclick="loadAllMFEs()" class="load-all-btn">🚀 Load All Micro-Frontends</button>
+          <button onclick="unloadAllMFEs()" class="unload-btn">🗑️ Unload All</button>
+          <button onclick="resetToDefaults()" class="reset-btn">🔄 Reset to Defaults</button>
+        </div>
+        
+        <div class="status-indicator">
+          <div class="status-item">
+            <span>Product List:</span>
+            <span id="product-status" class="status-badge status-unloaded">Not Loaded</span>
+          </div>
+          <div class="status-item">
+            <span>User Profile:</span>
+            <span id="user-status" class="status-badge status-unloaded">Not Loaded</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <div class="microfrontends">
       <div class="mfe-section">
         <h2 class="mfe-title">🛍️ Product List MFE</h2>
@@ -160,6 +387,181 @@
   
   <script>
     System.import('@reactmf/root-config');
+  </script>
+  
+  <script>
+    // Global state for tracking loaded micro-frontends
+    let loadedMFEs = {
+      productList: false,
+      userProfile: false
+    };
+    
+    // Update status indicators
+    function updateStatus(mfe, status) {
+      const statusElement = document.getElementById(mfe + '-status');
+      statusElement.className = `status-badge status-${status}`;
+      statusElement.textContent = status === 'loaded' ? 'Loaded' : 
+                                  status === 'error' ? 'Error' : 
+                                  status === 'loading' ? 'Loading...' : 'Not Loaded';
+    }
+    
+    // Clear micro-frontend container
+    function clearMFEContainer(containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '<div class="loading">Ready to load...</div>';
+    }
+    
+    // Load Product List MFE
+    async function loadProductListMFE() {
+      const url = document.getElementById('product-list-url').value.trim();
+      if (!url) {
+        alert('Please enter a valid URL for Product List MFE');
+        return;
+      }
+      
+      try {
+        // Unregister if already loaded
+        if (loadedMFEs.productList) {
+          await window.singleSpa.unregisterApplication('@reactmf/product-list');
+          loadedMFEs.productList = false;
+        }
+        
+        // Clear container
+        clearMFEContainer('product-list-mfe');
+        updateStatus('product', 'loading');
+        
+        // Import the module directly and register it with SystemJS
+        console.log('Loading Product List MFE from:', url);
+        const productListModule = await System.import(url);
+        
+        // Register the module with SystemJS for future imports
+        System.set('@reactmf/product-list', productListModule);
+        
+        console.log('Product List module loaded and registered');
+        
+        // Register the micro-frontend with Single-SPA
+        window.singleSpa.registerApplication({
+          name: '@reactmf/product-list',
+          app: () => Promise.resolve(productListModule),
+          activeWhen: () => true,
+          customProps: {
+            domElement: document.getElementById('product-list-mfe'),
+          }
+        });
+        
+        loadedMFEs.productList = true;
+        updateStatus('product', 'loaded');
+        console.log('Product List MFE loaded successfully from:', url);
+        
+      } catch (error) {
+        console.error('Error loading Product List MFE:', error);
+        updateStatus('product', 'error');
+        loadedMFEs.productList = false;
+        document.getElementById('product-list-mfe').innerHTML = 
+          '<div class="error">❌ Failed to load Product List MFE<br><small>' + error.message + '</small></div>';
+      }
+    }
+    
+    // Load User Profile MFE
+    async function loadUserProfileMFE() {
+      const url = document.getElementById('user-profile-url').value.trim();
+      if (!url) {
+        alert('Please enter a valid URL for User Profile MFE');
+        return;
+      }
+      
+      try {
+        // Unregister if already loaded
+        if (loadedMFEs.userProfile) {
+          await window.singleSpa.unregisterApplication('@reactmf/user-profile');
+          loadedMFEs.userProfile = false;
+        }
+        
+        // Clear container
+        clearMFEContainer('user-profile-mfe');
+        updateStatus('user', 'loading');
+        
+        // Import the module directly and register it with SystemJS
+        console.log('Loading User Profile MFE from:', url);
+        const userProfileModule = await System.import(url);
+        
+        // Register the module with SystemJS for future imports
+        System.set('@reactmf/user-profile', userProfileModule);
+        
+        console.log('User Profile module loaded and registered');
+        
+        // Register the micro-frontend with Single-SPA
+        window.singleSpa.registerApplication({
+          name: '@reactmf/user-profile',
+          app: () => Promise.resolve(userProfileModule),
+          activeWhen: () => true,
+          customProps: {
+            domElement: document.getElementById('user-profile-mfe'),
+          }
+        });
+        
+        loadedMFEs.userProfile = true;
+        updateStatus('user', 'loaded');
+        console.log('User Profile MFE loaded successfully from:', url);
+        
+      } catch (error) {
+        console.error('Error loading User Profile MFE:', error);
+        updateStatus('user', 'error');
+        loadedMFEs.userProfile = false;
+        document.getElementById('user-profile-mfe').innerHTML = 
+          '<div class="error">❌ Failed to load User Profile MFE<br><small>' + error.message + '</small></div>';
+      }
+    }
+    
+    // Load all micro-frontends
+    async function loadAllMFEs() {
+      console.log('Loading all micro-frontends...');
+      try {
+        await loadProductListMFE();
+        // Add a small delay to prevent conflicts
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await loadUserProfileMFE();
+        console.log('All micro-frontends loaded successfully!');
+      } catch (error) {
+        console.error('Error loading all micro-frontends:', error);
+      }
+    }
+    
+    // Unload all micro-frontends
+    async function unloadAllMFEs() {
+      try {
+        if (loadedMFEs.productList) {
+          await window.singleSpa.unregisterApplication('@reactmf/product-list');
+          loadedMFEs.productList = false;
+          clearMFEContainer('product-list-mfe');
+          updateStatus('product', 'unloaded');
+        }
+        
+        if (loadedMFEs.userProfile) {
+          await window.singleSpa.unregisterApplication('@reactmf/user-profile');
+          loadedMFEs.userProfile = false;
+          clearMFEContainer('user-profile-mfe');
+          updateStatus('user', 'unloaded');
+        }
+        
+        console.log('All micro-frontends unloaded');
+      } catch (error) {
+        console.error('Error unloading micro-frontends:', error);
+      }
+    }
+    
+    // Reset to default URLs
+    function resetToDefaults() {
+      document.getElementById('product-list-url').value = 'http://localhost:8080/reactmf-product-list.js';
+      document.getElementById('user-profile-url').value = 'http://localhost:8081/reactmf-user-profile.js';
+      console.log('URLs reset to defaults');
+    }
+    
+    // Auto-load on page ready
+    document.addEventListener('DOMContentLoaded', function() {
+      // Optional: Auto-load default micro-frontends
+      // setTimeout(loadAllMFEs, 1000);
+    });
   </script>
 </body>
 </html>
